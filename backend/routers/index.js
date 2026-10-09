@@ -1,0 +1,43 @@
+const express = require('express');
+const auth = require('../middleware/auth');
+const { requireRole } = auth;
+const authController = require('../controllers/authController');
+const funnelController = require('../controllers/funnelController');
+const orderController = require('../controllers/orderController');
+const pushController = require('../controllers/pushController');
+const dashboardController = require('../controllers/dashboardController');
+const trackingController = require('../controllers/trackingController');
+
+const router = express.Router();
+
+router.post('/auth/register', authController.register);
+router.post('/auth/login', authController.login);
+router.get('/auth/me', auth, (req, res) => res.json({ user: { id: req.user.id, name: req.user.name, email: req.user.email, role: req.user.role } }));
+router.post('/auth/invite', auth, requireRole('admin'), authController.createInvite);
+router.get('/public/funnels/:slug', funnelController.getPublicFunnel);
+router.post('/public/funnels/:slug/orders', orderController.createPublicOrder);
+router.get('/public/track/:orderNumber', trackingController.getTracking);
+router.get('/public/riders/:accessToken', orderController.getRiderPortal);
+router.patch('/public/riders/:accessToken/orders/:orderId', orderController.updateRiderDelivery);
+router.patch('/public/riders/:accessToken/stock-transfers/:transferId/receive', orderController.receiveRiderStock);
+router.get('/funnels', auth, funnelController.listFunnels);
+router.post('/funnels', auth, requireRole('admin'), funnelController.createFunnel);
+router.patch('/funnels/:id', auth, requireRole('admin'), funnelController.updateFunnel);
+router.get('/orders', auth, orderController.listOrders);
+router.patch('/orders/:id/stage', auth, orderController.updateOrderStage);
+router.get('/orders/:id/reroute-options', auth, orderController.getRerouteOptions);
+router.post('/orders/:orderId/redirect', auth, orderController.redirectOwnerDelivery);
+router.get('/riders', auth, orderController.listRiders);
+router.post('/riders', auth, requireRole('admin'), orderController.createRider);
+router.patch('/riders/:id', auth, requireRole('admin'), orderController.updateRider);
+router.post('/riders/:id/stock', auth, requireRole('admin'), orderController.addRiderStock);
+router.patch('/riders/:riderId/stock-transfers/:transferId/receive', auth, orderController.receiveRiderStockAsOwner);
+router.post('/orders/:id/assign-from-stock', auth, orderController.assignOrderFromRiderStock);
+router.get('/notifications', auth, orderController.getNotifications);
+router.get('/push/public-key', auth, pushController.getPublicKey);
+router.post('/push/subscriptions', auth, pushController.saveSubscription);
+router.delete('/push/subscriptions', auth, pushController.deleteSubscription);
+router.post('/push/test', auth, pushController.sendTestNotification);
+router.get('/dashboard', auth, dashboardController.getDashboard);
+
+module.exports = router;
