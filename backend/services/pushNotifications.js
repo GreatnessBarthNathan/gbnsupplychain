@@ -1,5 +1,6 @@
 const webPush = require('web-push');
 const PushSubscription = require('../models/PushSubscription');
+const User = require('../models/User');
 
 let configured = false;
 
@@ -23,9 +24,18 @@ function configureWebPush() {
   return config;
 }
 
-async function sendPushNotification(owner, notification) {
+async function sendPushNotification(workspaceOwnerId, notification) {
   configureWebPush();
-  const subscriptions = await PushSubscription.find({ owner }).lean();
+  const users = await User.find({
+    isActive: true,
+    $or: [
+      { _id: workspaceOwnerId },
+      { invitedBy: workspaceOwnerId, role: 'staff' }
+    ]
+  }).select('_id').lean();
+  const subscriptions = await PushSubscription.find({
+    owner: { $in: users.map((user) => user._id) }
+  }).lean();
   const payload = JSON.stringify({
     title: notification.title || 'GBN Supply Chain',
     body: notification.message,

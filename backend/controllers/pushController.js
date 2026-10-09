@@ -59,7 +59,7 @@ async function deleteSubscription(req, res, next) {
 
 async function sendTestNotification(req, res, next) {
   try {
-    const result = await sendPushNotification(req.user.id, {
+    const result = await sendPushNotification(req.workspaceOwnerId, {
       title: 'GBN Supply Chain test',
       message: 'Push notifications are reaching this device.',
       url: '/'
