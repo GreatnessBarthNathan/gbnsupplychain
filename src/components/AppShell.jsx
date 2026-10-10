@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -24,6 +24,8 @@ export default function AppShell() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [notifications, setNotifications] = useState([]);
+  const [clearingNotifications, setClearingNotifications] = useState(false);
+  const notificationsRequest = useRef(0);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notice, setNotice] = useState('');
   const [inviteLink, setInviteLink] = useState('');
@@ -92,8 +94,16 @@ export default function AppShell() {
 
   useEffect(() => {
     let mounted = true;
-    const load = () => api('/notifications').then((items) => mounted && setNotifications(items))
-      .catch((error) => mounted && setNotice(error.message));
+    const load = () => {
+      const request = ++notificationsRequest.current;
+      api('/notifications')
+        .then((items) => {
+          if (mounted && request === notificationsRequest.current) setNotifications(items);
+        })
+        .catch((error) => {
+          if (mounted && request === notificationsRequest.current) setNotice(error.message);
+        });
+    };
     load();
     const interval = window.setInterval(load, 30000);
     return () => {
@@ -101,6 +111,22 @@ export default function AppShell() {
       window.clearInterval(interval);
     };
   }, []);
+
+  async function clearNotifications() {
+    if (!window.confirm('Delete all previous notifications? This cannot be undone.')) return;
+    notificationsRequest.current += 1;
+    setClearingNotifications(true);
+    setNotice('');
+    try {
+      await api('/notifications', { method: 'DELETE' });
+      notificationsRequest.current += 1;
+      setNotifications([]);
+    } catch (error) {
+      setNotice(error.message);
+    } finally {
+      setClearingNotifications(false);
+    }
+  }
 
   const [eyebrow, title] = titles[location.pathname] || titles['/'];
   const unread = notifications.filter((item) => !item.readAt).length;
@@ -154,7 +180,7 @@ export default function AppShell() {
               </button>
               {showNotifications && (
                 <div className="notification-popover">
-                  <div className="popover-title"><strong>Notifications</strong><span>{notifications.length} recent</span></div>
+                  <div className="popover-title"><strong>Notifications</strong><span>{notifications.length} recent</span>{notifications.length > 0 && <button className="clear-notifications" type="button" disabled={clearingNotifications} onClick={clearNotifications}>{clearingNotifications ? 'Clearing…' : 'Clear all'}</button>}</div>
                   {notifications.length === 0 ? <p className="empty-note">You’re all caught up.</p> : notifications.slice(0, 6).map((item) => (
                     <div className="notification-item" key={item._id}><span className="notification-pip" /><div><p>{item.message}</p><small>{new Date(item.createdAt).toLocaleString()}</small></div></div>
                   ))}

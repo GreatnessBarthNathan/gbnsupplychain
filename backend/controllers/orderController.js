@@ -857,6 +857,15 @@ async function getNotifications(req, res, next) {
   }
 }
 
+async function clearNotifications(req, res, next) {
+  try {
+    await Notification.deleteMany({ owner: req.workspaceOwnerId });
+    res.json({ message: 'Notifications cleared.' });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   listOrders,
   createPublicOrder,
@@ -872,5 +881,6 @@ module.exports = {
   getRerouteOptions,
   updateRiderDelivery,
   redirectOwnerDelivery,
-  getNotifications
+  getNotifications,
+  clearNotifications
 };

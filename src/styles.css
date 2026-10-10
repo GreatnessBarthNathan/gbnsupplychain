@@ -62,9 +62,11 @@ a { color: inherit; text-decoration: none; }
 .icon-button i { align-items: center; background: #da8464; border: 2px solid #fff; border-radius: 20px; color: #fff; display: flex; font: 600 8px 'DM Sans'; height: 16px; justify-content: center; min-width: 16px; padding: 0 3px; position: absolute; right: -5px; top: -6px; }
 .notification-wrap { position: relative; }
 .notification-popover { background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 40px #183d2f1a; position: absolute; right: -4px; top: 46px; width: 320px; z-index: 15; }
-.popover-title { align-items: center; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; padding: 15px 17px; }
+.popover-title { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 10px; justify-content: space-between; padding: 15px 17px; }
 .popover-title strong { font: 700 13px var(--display); }
 .popover-title span, .empty-note { color: #8a958f; font-size: 10px; }
+.clear-notifications { background: none; border: 0; color: #a95543; font-size: 10px; padding: 4px 0; }
+.clear-notifications:disabled { cursor: wait; opacity: .65; }
 .notification-item { align-items: flex-start; border-bottom: 1px solid #f1f2ef; display: flex; gap: 10px; padding: 12px 16px; }
 .notification-pip { background: #43826a; border-radius: 50%; flex: 0 0 auto; height: 7px; margin-top: 5px; width: 7px; }
 .notification-item p { font-size: 11px; line-height: 1.5; margin: 0 0 4px; }

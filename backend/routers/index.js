@@ -34,6 +34,7 @@ router.post('/riders/:id/stock', auth, requireRole('admin'), orderController.add
 router.patch('/riders/:riderId/stock-transfers/:transferId/receive', auth, orderController.receiveRiderStockAsOwner);
 router.post('/orders/:id/assign-from-stock', auth, orderController.assignOrderFromRiderStock);
 router.get('/notifications', auth, orderController.getNotifications);
+router.delete('/notifications', auth, orderController.clearNotifications);
 router.get('/push/public-key', auth, pushController.getPublicKey);
 router.post('/push/subscriptions', auth, pushController.saveSubscription);
 router.delete('/push/subscriptions', auth, pushController.deleteSubscription);
