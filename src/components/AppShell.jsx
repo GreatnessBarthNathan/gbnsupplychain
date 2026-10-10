@@ -139,6 +139,7 @@ export default function AppShell() {
           <div className="mobile-brand"><span className="brand-mark">G</span> GBN Supply Chain</div>
           <div className="breadcrumbs"><span>Workspace</span><b>/</b><strong>{title}</strong></div>
           <div className="topbar-actions">
+            <button className="button secondary mobile-logout" onClick={logout}>Log out</button>
             {isAdmin && (
               <button className="button secondary" onClick={createInviteLink}>
                 {inviteLink ? 'Invite copied' : 'Create invite link'}
