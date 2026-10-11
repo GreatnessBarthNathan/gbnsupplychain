@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const mongoose = require('mongoose');
 const Funnel = require('../models/Funnel');
 
 function slugPart(value) {
@@ -42,7 +43,7 @@ function validateFunnelInput(body) {
 
 async function listFunnels(req, res, next) {
   try {
-    const funnels = await Funnel.find({ owner: req.workspaceOwnerId }).sort({ createdAt: -1 });
+    const funnels = await Funnel.find({ owner: req.workspaceOwnerId, archived: { $ne: true } }).sort({ createdAt: -1 });
     res.json(funnels);
   } catch (error) {
     next(error);
@@ -69,7 +70,7 @@ async function updateFunnel(req, res, next) {
     const { error, values } = validateFunnelInput(req.body);
     if (error) return res.status(400).json({ message: error });
     const funnel = await Funnel.findOneAndUpdate(
-      { _id: req.params.id, owner: req.workspaceOwnerId },
+      { _id: req.params.id, owner: req.workspaceOwnerId, archived: { $ne: true } },
       { $set: values },
       { new: true, runValidators: true }
     );
@@ -80,9 +81,26 @@ async function updateFunnel(req, res, next) {
   }
 }
 
+async function deleteFunnel(req, res, next) {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: 'Funnel not found.' });
+    }
+    const funnel = await Funnel.findOneAndUpdate(
+      { _id: req.params.id, owner: req.workspaceOwnerId, archived: { $ne: true } },
+      { $set: { active: false, archived: true } },
+      { new: true }
+    );
+    if (!funnel) return res.status(404).json({ message: 'Funnel not found.' });
+    res.json({ message: 'Funnel deleted. Existing order and inventory history has been retained.' });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getPublicFunnel(req, res, next) {
   try {
-    const funnel = await Funnel.findOne({ slug: req.params.slug, active: true })
+    const funnel = await Funnel.findOne({ slug: req.params.slug, active: true, archived: { $ne: true } })
       .select('name productName description images price currency pixelId slug');
     if (!funnel) return res.status(404).json({ message: 'This product page is no longer available.' });
     res.json(funnel);
@@ -91,4 +109,4 @@ async function getPublicFunnel(req, res, next) {
   }
 }
 
-module.exports = { listFunnels, createFunnel, updateFunnel, getPublicFunnel };
+module.exports = { listFunnels, createFunnel, updateFunnel, deleteFunnel, getPublicFunnel };

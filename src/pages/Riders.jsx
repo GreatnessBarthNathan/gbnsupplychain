@@ -20,6 +20,7 @@ export default function Riders() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState('');
 
   function load() {
     setLoading(true);
@@ -71,6 +72,20 @@ export default function Riders() {
     }
   }
 
+  async function deleteRider(rider) {
+    if (!window.confirm(`Delete ${rider.name}? Their order and inventory history will be kept. They must have no active deliveries or unresolved stock.`)) return;
+    setDeletingId(rider._id);
+    setError('');
+    try {
+      await api(`/riders/${rider._id}`, { method: 'DELETE' });
+      setRiders((current) => current.filter((item) => item._id !== rider._id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeletingId('');
+    }
+  }
+
   async function sendStock(event) {
     event.preventDefault();
     if (!isAdmin) {
@@ -114,7 +129,7 @@ export default function Riders() {
       {error && <div className="form-error">{error}</div>}
       <section className="rider-note"><span>⌖</span><div><strong>A clear handover makes a better delivery.</strong><p>Record product stock sent to a rider here. Assign confirmed orders from their available stock in Orders; active delivery counts update automatically as orders are assigned and completed.</p></div></section>
       <div className="rider-grid">{loading ? <LoadingIndicator message="Loading riders…" /> : riders.map((rider, index) => <article className="rider-card" key={rider._id}>
-        <div className="rider-card-top"><span className={`avatar rider-avatar rider-color-${index % 4}`}>{rider.name.slice(0, 1).toUpperCase()}</span><span className="active-mark"><i /> {rider.active ? 'On the team' : 'Inactive'}</span>{isAdmin && <button type="button" className="icon-button small-button" title="Edit rider" aria-label={`Edit ${rider.name}`} onClick={() => openEditForm(rider)}>✎</button>}</div>
+        <div className="rider-card-top"><span className={`avatar rider-avatar rider-color-${index % 4}`}>{rider.name.slice(0, 1).toUpperCase()}</span><span className="active-mark"><i /> {rider.active ? 'On the team' : 'Inactive'}</span>{isAdmin && <><button type="button" className="icon-button small-button" title="Edit rider" aria-label={`Edit ${rider.name}`} onClick={() => openEditForm(rider)}>✎</button><button type="button" className="icon-button small-button delete-button" title="Delete rider" aria-label={`Delete ${rider.name}`} disabled={deletingId === rider._id} onClick={() => deleteRider(rider)}>{deletingId === rider._id ? '…' : '×'}</button></>}</div>
         <h3>{rider.name}</h3><a className="rider-phone" href={`tel:${rider.phone}`}>{rider.phone} <span>↗</span></a>
         <div className="rider-location"><span>⌖</span> {[rider.city, rider.state].filter(Boolean).join(', ') || 'Location not set'}</div>
         {rider.accessToken && <div className="rider-portal-actions"><button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/rider/${rider.accessToken}`)}>Copy rider portal link</button><a href={`https://wa.me/${rider.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hi ${rider.name}, use this secure link to view your active GBN Supply Chain deliveries and update delivery outcomes: ${window.location.origin}/rider/${rider.accessToken}`)}`} target="_blank" rel="noreferrer">Share via WhatsApp ↗</a></div>}

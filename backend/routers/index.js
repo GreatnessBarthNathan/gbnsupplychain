@@ -23,6 +23,7 @@ router.patch('/public/riders/:accessToken/stock-transfers/:transferId/receive', 
 router.get('/funnels', auth, funnelController.listFunnels);
 router.post('/funnels', auth, requireRole('admin'), funnelController.createFunnel);
 router.patch('/funnels/:id', auth, requireRole('admin'), funnelController.updateFunnel);
+router.delete('/funnels/:id', auth, requireRole('admin'), funnelController.deleteFunnel);
 router.get('/orders', auth, orderController.listOrders);
 router.patch('/orders/:id/stage', auth, orderController.updateOrderStage);
 router.get('/orders/:id/reroute-options', auth, orderController.getRerouteOptions);
@@ -30,6 +31,7 @@ router.post('/orders/:orderId/redirect', auth, orderController.redirectOwnerDeli
 router.get('/riders', auth, orderController.listRiders);
 router.post('/riders', auth, requireRole('admin'), orderController.createRider);
 router.patch('/riders/:id', auth, requireRole('admin'), orderController.updateRider);
+router.delete('/riders/:id', auth, requireRole('admin'), orderController.deleteRider);
 router.post('/riders/:id/stock', auth, requireRole('admin'), orderController.addRiderStock);
 router.patch('/riders/:riderId/stock-transfers/:transferId/receive', auth, orderController.receiveRiderStockAsOwner);
 router.post('/orders/:id/assign-from-stock', auth, orderController.assignOrderFromRiderStock);

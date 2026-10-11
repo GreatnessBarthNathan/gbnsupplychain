@@ -199,7 +199,7 @@ async function createPublicOrder(req, res, next) {
     if (!Number.isInteger(orderQuantity) || orderQuantity < 1 || orderQuantity > 100) {
       return res.status(400).json({ message: 'Quantity must be between 1 and 100.' });
     }
-    const funnel = await Funnel.findOne({ slug: req.params.slug, active: true });
+    const funnel = await Funnel.findOne({ slug: req.params.slug, active: true, archived: { $ne: true } });
     if (!funnel) return res.status(404).json({ message: 'This product page is no longer available.' });
     const discountedTotal = getDiscountedTotal(funnel.price, orderQuantity);
     const order = await Order.create({
@@ -308,7 +308,7 @@ async function updateOrderStage(req, res, next) {
 async function listRiders(req, res, next) {
   try {
     await reconcileFailedRiderStock({ owner: req.workspaceOwnerId });
-    const riders = await Rider.find({ owner: req.workspaceOwnerId }).select('+accessToken').sort({ name: 1 }).lean();
+    const riders = await Rider.find({ owner: req.workspaceOwnerId, archived: { $ne: true } }).select('+accessToken').sort({ name: 1 }).lean();
     const [stock, availableStock, stockTransfers] = await Promise.all([
       Order.aggregate([
       { $match: { owner: req.workspaceOwnerId, stage: { $in: riderInventoryStages }, rider: { $ne: null }, redirectedTo: null, stockRestocked: { $ne: true } } },
@@ -560,7 +560,7 @@ async function updateRider(req, res, next) {
       return res.status(400).json({ message: 'Rider name, phone, city, state, and status are required.' });
     }
     const rider = await Rider.findOneAndUpdate(
-      { _id: req.params.id, owner: req.workspaceOwnerId },
+      { _id: req.params.id, owner: req.workspaceOwnerId, archived: { $ne: true } },
       {
         $set: {
           name: name.trim(),
@@ -574,6 +574,44 @@ async function updateRider(req, res, next) {
     ).select('+accessToken');
     if (!rider) return res.status(404).json({ message: 'Rider not found.' });
     res.json(rider);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deleteRider(req, res, next) {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: 'Rider not found.' });
+    }
+    const rider = await Rider.findOne({
+      _id: req.params.id,
+      owner: req.workspaceOwnerId,
+      archived: { $ne: true }
+    });
+    if (!rider) return res.status(404).json({ message: 'Rider not found.' });
+
+    const [activeOrder, availableStock, stockInTransit] = await Promise.all([
+      Order.exists({
+        owner: req.workspaceOwnerId,
+        rider: rider.id,
+        stage: { $in: riderInventoryStages },
+        redirectedTo: null,
+        stockRestocked: { $ne: true }
+      }),
+      RiderStock.exists({ owner: req.workspaceOwnerId, rider: rider.id, quantity: { $gt: 0 } }),
+      RiderStockTransfer.exists({ owner: req.workspaceOwnerId, rider: rider.id, status: 'in_transit' })
+    ]);
+    if (activeOrder || availableStock || stockInTransit) {
+      return res.status(409).json({
+        message: 'Resolve this rider’s active deliveries, available stock, and shipments in transit before deleting them.'
+      });
+    }
+
+    rider.active = false;
+    rider.archived = true;
+    await rider.save();
+    res.json({ message: 'Rider deleted. Existing order and inventory history has been retained.' });
   } catch (error) {
     next(error);
   }
@@ -873,6 +911,7 @@ module.exports = {
   listRiders,
   createRider,
   updateRider,
+  deleteRider,
   addRiderStock,
   receiveRiderStock,
   receiveRiderStockAsOwner,

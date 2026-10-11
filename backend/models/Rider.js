@@ -8,7 +8,8 @@ const riderSchema = new mongoose.Schema(
     accessToken: { type: String, required: true, unique: true, select: false },
     city: { type: String, required: true, trim: true, maxlength: 100, default: '' },
     state: { type: String, trim: true, maxlength: 80, default: '' },
-    active: { type: Boolean, default: true }
+    active: { type: Boolean, default: true },
+    archived: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

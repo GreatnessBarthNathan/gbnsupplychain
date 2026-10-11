@@ -25,6 +25,7 @@ Run `npm run build`, then start the combined application with `npm start`. Set `
 
 - Create and share a product funnel at `/f/:slug`; customers submit delivery details, including a required WhatsApp number, and select a quantity without paying online. Open the WhatsApp link on an order to chat with the customer.
 - Edit a funnel from its sales funnel card to update product details, images, pricing, currency, or Meta Pixel settings without changing its share link.
+- Delete a funnel from its card to disable its public page while retaining linked orders and inventory history. Delete a rider after resolving their active deliveries, available stock, and shipments in transit; their existing history is retained.
 - Product image links must be direct, publicly accessible HTTPS image URLs; third-party share-page links (for example, a photo album page) are not image files.
 - Customer delivery and dispatch-rider forms use a state selector and a free-text city/town field.
 - A submitted order creates an in-app notification and starts at **New order**.

@@ -16,6 +16,7 @@ export default function Funnels() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState('');
 
   function load() {
     setLoading(true);
@@ -73,6 +74,20 @@ export default function Funnels() {
     }
   }
 
+  async function deleteFunnel(funnel) {
+    if (!window.confirm(`Delete "${funnel.productName}"? Its public page will be disabled. Existing orders and inventory history will be kept.`)) return;
+    setDeletingId(funnel._id);
+    setError('');
+    try {
+      await api(`/funnels/${funnel._id}`, { method: 'DELETE' });
+      setFunnels((current) => current.filter((item) => item._id !== funnel._id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeletingId('');
+    }
+  }
+
   return (
     <div className="page-content">
       <div className="page-toolbar"><div><p className="subtle-copy">A dedicated page for every product you’re ready to send out.</p></div>{isAdmin && <button className="button primary" onClick={openCreateForm}><span>＋</span> Create new funnel</button>}</div>
@@ -81,7 +96,7 @@ export default function Funnels() {
       <div className="funnel-grid">{loading ? <LoadingIndicator message="Loading funnels…" /> : funnels.map((funnel, index) => (
         <article className="funnel-card" key={funnel._id}>
           <div className={`product-art art-${index % 4}`}>{funnel.images?.[0] ? <img src={funnel.images[0]} alt={funnel.productName} /> : <span className="product-shape">◈</span>}<span className="product-art-label">GBN / PRODUCT {String(index + 1).padStart(2, '0')}</span></div>
-          <div className="funnel-card-body"><div className="funnel-card-top"><span className="active-mark"><i /> Live funnel</span><div className="funnel-card-actions">{isAdmin && <button className="icon-button small-button" title="Edit funnel" aria-label={`Edit ${funnel.productName}`} onClick={() => openEditForm(funnel)}>✎</button>}<button className="icon-button small-button" title="Open funnel" aria-label={`Preview ${funnel.productName}`} onClick={() => window.open(`/f/${funnel.slug}`, '_blank', 'noopener,noreferrer')}>↗</button></div></div>
+          <div className="funnel-card-body"><div className="funnel-card-top"><span className="active-mark"><i /> Live funnel</span><div className="funnel-card-actions">{isAdmin && <><button className="icon-button small-button" title="Edit funnel" aria-label={`Edit ${funnel.productName}`} onClick={() => openEditForm(funnel)}>✎</button><button className="icon-button small-button delete-button" title="Delete funnel" aria-label={`Delete ${funnel.productName}`} disabled={deletingId === funnel._id} onClick={() => deleteFunnel(funnel)}>{deletingId === funnel._id ? '…' : '×'}</button></>}<button className="icon-button small-button" title="Open funnel" aria-label={`Preview ${funnel.productName}`} onClick={() => window.open(`/f/${funnel.slug}`, '_blank', 'noopener,noreferrer')}>↗</button></div></div>
             <h3>{funnel.productName}</h3><p className="funnel-name">{funnel.name}</p><div className="funnel-card-footer"><strong>{money(funnel.price, funnel.currency)}</strong><Link to={`/f/${funnel.slug}`} target="_blank">Preview page <span>→</span></Link></div>
             <div className="funnel-url"><span>gbn.store/f/{funnel.slug}</span><button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/f/${funnel.slug}`)}>Copy link</button></div>
           </div>

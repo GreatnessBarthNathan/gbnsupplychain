@@ -11,7 +11,8 @@ const funnelSchema = new mongoose.Schema(
     currency: { type: String, trim: true, uppercase: true, default: 'NGN', maxlength: 3 },
     pixelId: { type: String, trim: true, default: '', maxlength: 32 },
     slug: { type: String, unique: true, index: true },
-    active: { type: Boolean, default: true }
+    active: { type: Boolean, default: true },
+    archived: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
