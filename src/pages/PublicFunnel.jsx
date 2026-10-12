@@ -159,9 +159,16 @@ export default function PublicFunnel() {
               <h1>{funnel.productName}</h1>
               <div className='store-price-block'>
                 <span className='store-price-label'>Today’s order price</span>
-                <strong className='store-price'>
-                  {money(funnel.price, funnel.currency)}
-                </strong>
+                <div className='store-price-comparison'>
+                  {funnel.regularPrice > funnel.price && (
+                    <del className='store-regular-price'>
+                      {money(funnel.regularPrice, funnel.currency)}
+                    </del>
+                  )}
+                  <strong className='store-price'>
+                    {money(funnel.price, funnel.currency)}
+                  </strong>
+                </div>
               </div>
               <p>
                 {funnel.description ||

@@ -1755,9 +1755,18 @@ td small {
   font-weight: 600;
   margin-bottom: 2px;
 }
+.store-price-comparison {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.store-regular-price {
+  color: #7a847d;
+  font-size: 15px;
+}
 .store-price {
   color: #356044;
-  display: block;
   font: 700 21px var(--display);
 }
 .store-product-copy > p {

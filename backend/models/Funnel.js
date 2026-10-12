@@ -9,6 +9,7 @@ const funnelSchema = new mongoose.Schema(
     images: { type: [String], default: [] },
     imageDescriptions: { type: [String], default: [] },
     price: { type: Number, required: true, min: 0 },
+    regularPrice: { type: Number, min: 0, default: null },
     currency: { type: String, trim: true, uppercase: true, default: 'NGN', maxlength: 3 },
     pixelId: { type: String, trim: true, default: '', maxlength: 32 },
     slug: { type: String, unique: true, index: true },

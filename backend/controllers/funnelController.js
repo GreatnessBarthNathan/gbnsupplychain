@@ -16,9 +16,17 @@ function isHttpUrl(value) {
 }
 
 function validateFunnelInput(body) {
-  const { name, productName, description, price, currency, pixelId } = body;
+  const { name, productName, description, price, regularPrice, currency, pixelId } = body;
   if (!name?.trim() || !productName?.trim() || !Number.isFinite(Number(price))) {
     return { error: 'Funnel name, product name, and a valid price are required.' };
+  }
+  const numericPrice = Number(price);
+  const numericRegularPrice = regularPrice === '' || regularPrice == null
+    ? null
+    : Number(regularPrice);
+  if (numericRegularPrice !== null
+    && (!Number.isFinite(numericRegularPrice) || numericRegularPrice <= numericPrice)) {
+    return { error: 'Regular price must be higher than today’s price.' };
   }
   const requestedImages = body.images ?? [];
   if (!Array.isArray(requestedImages)) {
@@ -41,7 +49,8 @@ function validateFunnelInput(body) {
       description,
       images,
       imageDescriptions,
-      price: Number(price),
+      price: numericPrice,
+      regularPrice: numericRegularPrice,
       currency: currency || 'NGN',
       pixelId
     }
@@ -108,7 +117,7 @@ async function deleteFunnel(req, res, next) {
 async function getPublicFunnel(req, res, next) {
   try {
     const funnel = await Funnel.findOne({ slug: req.params.slug, active: true, archived: { $ne: true } })
-      .select('name productName description images imageDescriptions price currency pixelId slug');
+      .select('name productName description images imageDescriptions price regularPrice currency pixelId slug');
     if (!funnel) return res.status(404).json({ message: 'This product page is no longer available.' });
     res.json(funnel);
   } catch (error) {

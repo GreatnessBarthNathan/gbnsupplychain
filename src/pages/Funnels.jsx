@@ -4,7 +4,7 @@ import { api, money } from '../api';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useAuth } from '../context/AuthContext';
 
-const blank = { name: '', productName: '', description: '', images: [], price: '', currency: 'NGN', pixelId: '' };
+const blank = { name: '', productName: '', description: '', images: [], price: '', regularPrice: '', currency: 'NGN', pixelId: '' };
 
 export default function Funnels() {
   const { user } = useAuth();
@@ -46,6 +46,7 @@ export default function Funnels() {
         description: funnel.imageDescriptions?.[index] || ''
       })),
       price: String(funnel.price),
+      regularPrice: funnel.regularPrice == null ? '' : String(funnel.regularPrice),
       currency: funnel.currency || 'NGN',
       pixelId: funnel.pixelId || ''
     });
@@ -150,6 +151,7 @@ export default function Funnels() {
             <small>Add direct image links. For an image that fills the frame without cropping, use a 4:3 image (recommended: 1200 × 900 px).</small>
           </div>
           <div className="form-row"><label>Price<input required type="number" min="0" step="1" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="25000" /></label><label>Currency<select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })}><option value="NGN">NGN · Naira</option><option value="GHS">GHS · Cedi</option><option value="KES">KES · Shilling</option><option value="USD">USD · Dollar</option></select></label></div>
+          <label>Regular price <span className="optional">OPTIONAL</span><input type="number" min="0" step="0.01" value={form.regularPrice} onChange={(e) => setForm({ ...form, regularPrice: e.target.value })} placeholder="Enter the genuine regular price" /><small>Shown crossed out only when it’s higher than today’s price.</small></label>
           <label>Meta Pixel ID <span className="optional">OPTIONAL</span><input inputMode="numeric" maxLength="32" value={form.pixelId} onChange={(e) => setForm({ ...form, pixelId: e.target.value.replace(/\D/g, '') })} placeholder="Your Facebook Pixel ID" /><small>Purchase events will fire when an order is submitted.</small></label>
           {error && <div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="button secondary" onClick={() => setShowForm(false)}>Cancel</button><button className="button primary" disabled={busy}>{busy ? (editingId ? 'Saving…' : 'Creating…') : editingId ? 'Save changes' : 'Create funnel'} <span>→</span></button></div>
         </form>
