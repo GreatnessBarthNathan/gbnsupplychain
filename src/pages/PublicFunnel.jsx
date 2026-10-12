@@ -36,11 +36,12 @@ export default function PublicFunnel() {
   const [success, setSuccess] = useState('')
   const [busy, setBusy] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [selectedImage, setSelectedImage] = useState('')
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
   useEffect(() => {
     setLoading(true)
     setFunnel(null)
+    setSelectedImageIndex(0)
     setError('')
     api(`/public/funnels/${slug}`)
       .then(setFunnel)
@@ -124,11 +125,7 @@ export default function PublicFunnel() {
               {funnel.images?.length ? (
                 <img
                   className='store-product-photo'
-                  src={
-                    funnel.images.includes(selectedImage)
-                      ? selectedImage
-                      : funnel.images[0]
-                  }
+                  src={funnel.images[selectedImageIndex] || funnel.images[0]}
                   alt={funnel.productName}
                 />
               ) : (
@@ -138,20 +135,19 @@ export default function PublicFunnel() {
                 </>
               )}
             </div>
+            {funnel.images?.length > 0 && funnel.imageDescriptions?.[selectedImageIndex] && (
+              <p className='store-image-description'>{funnel.imageDescriptions[selectedImageIndex]}</p>
+            )}
             {funnel.images?.length > 1 && (
               <div className='store-gallery' aria-label='Product photos'>
                 {funnel.images.map((image, index) => (
                   <button
-                    className={`store-thumbnail${(funnel.images.includes(selectedImage) ? selectedImage : funnel.images[0]) === image ? ' selected' : ''}`}
+                    className={`store-thumbnail${selectedImageIndex === index ? ' selected' : ''}`}
                     key={`${image}-${index}`}
                     type='button'
-                    onClick={() => setSelectedImage(image)}
-                    aria-label={`View product photo ${index + 1}`}
-                    aria-pressed={
-                      (funnel.images.includes(selectedImage)
-                        ? selectedImage
-                        : funnel.images[0]) === image
-                    }
+                    onClick={() => setSelectedImageIndex(index)}
+                    aria-label={`View product photo ${index + 1}${funnel.imageDescriptions?.[index] ? `: ${funnel.imageDescriptions[index]}` : ''}`}
+                    aria-pressed={selectedImageIndex === index}
                   >
                     <img src={image} alt='' />
                   </button>

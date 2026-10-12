@@ -28,12 +28,19 @@ function validateFunnelInput(body) {
   if (images.length > 6 || images.some((image) => !isHttpUrl(image))) {
     return { error: 'Add up to 6 valid HTTP or HTTPS product image URLs.' };
   }
+  const requestedDescriptions = body.imageDescriptions ?? [];
+  if (!Array.isArray(requestedDescriptions) || requestedDescriptions.length > 6
+    || requestedDescriptions.some((item) => typeof item !== 'string' || item.length > 500)) {
+    return { error: 'Each image description must be text no longer than 500 characters.' };
+  }
+  const imageDescriptions = images.map((_, index) => (requestedDescriptions[index] || '').trim());
   return {
     values: {
       name,
       productName,
       description,
       images,
+      imageDescriptions,
       price: Number(price),
       currency: currency || 'NGN',
       pixelId
@@ -101,7 +108,7 @@ async function deleteFunnel(req, res, next) {
 async function getPublicFunnel(req, res, next) {
   try {
     const funnel = await Funnel.findOne({ slug: req.params.slug, active: true, archived: { $ne: true } })
-      .select('name productName description images price currency pixelId slug');
+      .select('name productName description images imageDescriptions price currency pixelId slug');
     if (!funnel) return res.status(404).json({ message: 'This product page is no longer available.' });
     res.json(funnel);
   } catch (error) {

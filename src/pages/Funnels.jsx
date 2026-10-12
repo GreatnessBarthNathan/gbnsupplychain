@@ -4,7 +4,7 @@ import { api, money } from '../api';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useAuth } from '../context/AuthContext';
 
-const blank = { name: '', productName: '', description: '', images: '', price: '', currency: 'NGN', pixelId: '' };
+const blank = { name: '', productName: '', description: '', images: [], price: '', currency: 'NGN', pixelId: '' };
 
 export default function Funnels() {
   const { user } = useAuth();
@@ -41,13 +41,40 @@ export default function Funnels() {
       name: funnel.name,
       productName: funnel.productName,
       description: funnel.description || '',
-      images: (funnel.images || []).join('\n'),
+      images: (funnel.images || []).map((url, index) => ({
+        url,
+        description: funnel.imageDescriptions?.[index] || ''
+      })),
       price: String(funnel.price),
       currency: funnel.currency || 'NGN',
       pixelId: funnel.pixelId || ''
     });
     setError('');
     setShowForm(true);
+  }
+
+  function updateImage(index, updates) {
+    setForm((current) => ({
+      ...current,
+      images: current.images.map((image, imageIndex) => (
+        imageIndex === index ? { ...image, ...updates } : image
+      ))
+    }));
+  }
+
+  function addImage() {
+    setForm((current) => (
+      current.images.length < 6
+        ? { ...current, images: [...current.images, { url: '', description: '' }] }
+        : current
+    ));
+  }
+
+  function removeImage(index) {
+    setForm((current) => ({
+      ...current,
+      images: current.images.filter((_, imageIndex) => imageIndex !== index)
+    }));
   }
 
   async function saveFunnel(event) {
@@ -57,7 +84,10 @@ export default function Funnels() {
     try {
       const payload = {
         ...form,
-        images: form.images.split(/\r?\n/).map((image) => image.trim()).filter(Boolean)
+        images: form.images.filter((image) => image.url.trim()).map((image) => image.url.trim()),
+        imageDescriptions: form.images
+          .filter((image) => image.url.trim())
+          .map((image) => image.description.trim())
       };
       await api(editingId ? `/funnels/${editingId}` : '/funnels', {
         method: editingId ? 'PATCH' : 'POST',
@@ -110,7 +140,15 @@ export default function Funnels() {
           <label>Funnel name<input required maxLength="100" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Summer launch" /></label>
           <label>Product name<input required maxLength="120" value={form.productName} onChange={(e) => setForm({ ...form, productName: e.target.value })} placeholder="What are you selling?" /></label>
           <label>Product description<textarea maxLength="1200" rows="3" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="What makes this product worth having?" /></label>
-          <label>Product image URLs <span className="optional">UP TO 6</span><textarea rows="3" value={form.images} onChange={(e) => setForm({ ...form, images: e.target.value })} placeholder={'Add one https:// image link per line'} /><small>Add clear photos of the product from different angles. Use direct image links.</small></label>
+          <div className="funnel-image-fields">
+            <div className="funnel-image-heading"><span>Product images <span className="optional">UP TO 6</span></span>{form.images.length < 6 && <button className="row-action" type="button" onClick={addImage}>Add image +</button>}</div>
+            {form.images.map((image, index) => <div className="funnel-image-field" key={index}>
+              <div className="funnel-image-field-heading"><strong>Image {index + 1}</strong><button className="row-action delete-image" type="button" onClick={() => removeImage(index)}>Remove</button></div>
+              <label>Image URL<input type="url" value={image.url} onChange={(event) => updateImage(index, { url: event.target.value })} placeholder="https://…" /></label>
+              <label>Image description <span className="optional">OPTIONAL</span><textarea maxLength="500" rows="2" value={image.description} onChange={(event) => updateImage(index, { description: event.target.value })} placeholder="Describe what this image shows" /></label>
+            </div>)}
+            <small>Add direct image links. The whole image will be shown without cropping.</small>
+          </div>
           <div className="form-row"><label>Price<input required type="number" min="0" step="1" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="25000" /></label><label>Currency<select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })}><option value="NGN">NGN · Naira</option><option value="GHS">GHS · Cedi</option><option value="KES">KES · Shilling</option><option value="USD">USD · Dollar</option></select></label></div>
           <label>Meta Pixel ID <span className="optional">OPTIONAL</span><input inputMode="numeric" maxLength="32" value={form.pixelId} onChange={(e) => setForm({ ...form, pixelId: e.target.value.replace(/\D/g, '') })} placeholder="Your Facebook Pixel ID" /><small>Purchase events will fire when an order is submitted.</small></label>
           {error && <div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="button secondary" onClick={() => setShowForm(false)}>Cancel</button><button className="button primary" disabled={busy}>{busy ? (editingId ? 'Saving…' : 'Creating…') : editingId ? 'Save changes' : 'Create funnel'} <span>→</span></button></div>

@@ -171,7 +171,7 @@ td small { color: #99a29d; display: block; font-size: 9px; margin-top: 4px; }
 .art-2 { background: #e7e9ed; color: #637286; }
 .art-3 { background: #f0e7e8; color: #a56d74; }
 .product-shape { font-size: 78px; line-height: 1; opacity: .45; text-shadow: 0 12px 20px #354c3622; transform: rotate(-15deg); }
-.product-art img { height: 100%; object-fit: cover; width: 100%; }
+.product-art img { height: 100%; object-fit: contain; width: 100%; }
 .product-art-label { bottom: 12px; color: #697c70; font-size: 8px; font-weight: 700; left: 14px; letter-spacing: 1px; position: absolute; }
 .funnel-card-body { padding: 14px 15px 13px; }
 .funnel-card-top { align-items: center; display: flex; justify-content: space-between; }
@@ -185,6 +185,16 @@ td small { color: #99a29d; display: block; font-size: 9px; margin-top: 4px; }
 .funnel-card-footer strong { font: 700 13px var(--display); }
 .funnel-card-footer a { color: #3f765d; font-size: 9px; font-weight: 600; }
 .funnel-url { align-items: center; background: #f7f8f5; border-radius: 6px; color: #8b9690; display: flex; font-size: 9px; justify-content: space-between; margin-top: 10px; overflow: hidden; padding: 7px 9px; }
+.funnel-image-fields { display: grid; gap: 10px; }
+.funnel-image-heading, .funnel-image-field-heading { align-items: center; display: flex; justify-content: space-between; }
+.funnel-image-heading { color: #495a51; font-size: 10px; font-weight: 600; }
+.funnel-image-field { background: #f8f9f7; border: 1px solid #e9ede8; border-radius: 8px; display: grid; gap: 9px; padding: 10px; }
+.funnel-image-field-heading strong { color: #68776e; font-size: 9px; }
+.funnel-image-field label { color: #495a51; display: grid; font-size: 9px; font-weight: 600; gap: 5px; }
+.funnel-image-field input, .funnel-image-field textarea { background: #fff; border: 1px solid #e3e8e2; border-radius: 7px; color: #304238; font-size: 10px; outline: none; padding: 8px 9px; width: 100%; }
+.funnel-image-field input:focus, .funnel-image-field textarea:focus { border-color: #79a58a; box-shadow: 0 0 0 3px #43805c15; }
+.funnel-image-fields > small { color: #939d97; font-size: 9px; }
+.delete-image { color: #a95543; }
 .funnel-url span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .funnel-url button { background: none; border: 0; color: #397259; flex: 0 0 auto; font-size: 9px; font-weight: 600; padding: 0 0 0 8px; }
 .empty-card { align-items: center; background: #fff; border: 1px dashed #d9e0d9; border-radius: 12px; display: flex; flex-direction: column; grid-column: 1 / -1; justify-content: center; min-height: 270px; padding: 30px; text-align: center; }
@@ -294,10 +304,11 @@ td small { color: #99a29d; display: block; font-size: 9px; margin-top: 4px; }
 .store-image-ring { background: #d6e3d2; border-radius: 50%; height: 130px; position: absolute; width: 130px; }
 .store-product-object { color: #63836b; font-size: 96px; position: relative; text-shadow: 0 10px 15px #263d3026; transform: rotate(-12deg); z-index: 1; }
 .store-product-photo { height: 100%; object-fit: contain; position: relative; width: 100%; z-index: 1; }
+.store-image-description { color: #78847c; font-size: 11px; line-height: 1.55; margin: 8px 2px 0; }
 .store-gallery { display: flex; gap: 9px; margin-top: 10px; overflow-x: auto; }
 .store-thumbnail { background: #fff; border: 1px solid #e5eae3; border-radius: 8px; flex: 0 0 68px; height: 62px; overflow: hidden; padding: 0; }
 .store-thumbnail.selected { border: 2px solid #43805c; }
-.store-thumbnail img { height: 100%; object-fit: cover; width: 100%; }
+.store-thumbnail img { height: 100%; object-fit: contain; width: 100%; }
 .store-product-copy { padding: 25px 6px 0; }
 .store-overline { color: #7e9081; font-size: 9px; }
 .store-product-copy h1 { color: #2b4035; font: 700 32px var(--display); letter-spacing: -1.1px; margin: 8px 0 5px; }
