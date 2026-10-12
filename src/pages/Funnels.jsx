@@ -147,7 +147,7 @@ export default function Funnels() {
               <label>Image URL<input type="url" value={image.url} onChange={(event) => updateImage(index, { url: event.target.value })} placeholder="https://…" /></label>
               <label>Image description <span className="optional">OPTIONAL</span><textarea maxLength="500" rows="2" value={image.description} onChange={(event) => updateImage(index, { description: event.target.value })} placeholder="Describe what this image shows" /></label>
             </div>)}
-            <small>Add direct image links. The whole image will be shown without cropping.</small>
+            <small>Add direct image links. For an image that fills the frame without cropping, use a 4:3 image (recommended: 1200 × 900 px).</small>
           </div>
           <div className="form-row"><label>Price<input required type="number" min="0" step="1" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="25000" /></label><label>Currency<select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })}><option value="NGN">NGN · Naira</option><option value="GHS">GHS · Cedi</option><option value="KES">KES · Shilling</option><option value="USD">USD · Dollar</option></select></label></div>
           <label>Meta Pixel ID <span className="optional">OPTIONAL</span><input inputMode="numeric" maxLength="32" value={form.pixelId} onChange={(e) => setForm({ ...form, pixelId: e.target.value.replace(/\D/g, '') })} placeholder="Your Facebook Pixel ID" /><small>Purchase events will fire when an order is submitted.</small></label>
