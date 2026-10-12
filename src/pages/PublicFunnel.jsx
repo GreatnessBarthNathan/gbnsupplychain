@@ -121,7 +121,9 @@ export default function PublicFunnel() {
       {funnel && (
         <div className='store-layout'>
           <section className='store-product'>
-            <div className={`store-image${funnel.images?.length ? ' has-photo' : ''}`}>
+            <div
+              className={`store-image${funnel.images?.length ? ' has-photo' : ''}`}
+            >
               {funnel.images?.length ? (
                 <img
                   className='store-product-photo'
@@ -135,9 +137,12 @@ export default function PublicFunnel() {
                 </>
               )}
             </div>
-            {funnel.images?.length > 0 && funnel.imageDescriptions?.[selectedImageIndex] && (
-              <p className='store-image-description'>{funnel.imageDescriptions[selectedImageIndex]}</p>
-            )}
+            {funnel.images?.length > 0 &&
+              funnel.imageDescriptions?.[selectedImageIndex] && (
+                <p className='store-image-description'>
+                  {funnel.imageDescriptions[selectedImageIndex]}
+                </p>
+              )}
             {funnel.images?.length > 1 && (
               <div className='store-gallery' aria-label='Product photos'>
                 {funnel.images.map((image, index) => (
@@ -208,9 +213,8 @@ export default function PublicFunnel() {
                 <details>
                   <summary>Is this product Original?</summary>
                   <p>
-                    Yes, we only sell carefully selected smart watches trusted
-                    by our customers. Direct importation, you can be rest
-                    assured.
+                    Yes, we only sell carefully selected perfumes trusted by our
+                    customers. Direct importation, you can be rest assured.
                   </p>
                 </details>
               </div>
@@ -268,7 +272,7 @@ export default function PublicFunnel() {
                       onChange={(e) =>
                         setForm({ ...form, phone: e.target.value })
                       }
-                      placeholder='+234 800 000 0000'
+                      placeholder='080 0000 0000'
                     />
                   </label>
                   <label>
@@ -282,7 +286,7 @@ export default function PublicFunnel() {
                       onChange={(e) =>
                         setForm({ ...form, whatsapp: e.target.value })
                       }
-                      placeholder='+234 800 000 0000'
+                      placeholder='080 0000 0000'
                     />
                   </label>
                   <label>
