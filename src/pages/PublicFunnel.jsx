@@ -157,9 +157,12 @@ export default function PublicFunnel() {
             <div className='store-product-copy'>
               <span className='store-overline'>MADE TO BE YOURS</span>
               <h1>{funnel.productName}</h1>
-              <strong className='store-price'>
-                {money(funnel.price, funnel.currency)}
-              </strong>
+              <div className='store-price-block'>
+                <span className='store-price-label'>Today’s order price</span>
+                <strong className='store-price'>
+                  {money(funnel.price, funnel.currency)}
+                </strong>
+              </div>
               <p>
                 {funnel.description ||
                   'A thoughtful choice for your everyday. Make it yours today and pay only when it arrives at your door.'}

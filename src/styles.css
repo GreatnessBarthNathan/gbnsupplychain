@@ -1745,6 +1745,16 @@ td small {
   letter-spacing: -1.1px;
   margin: 8px 0 5px;
 }
+.store-price-block {
+  margin-top: 8px;
+}
+.store-price-label {
+  color: #536057;
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
 .store-price {
   color: #356044;
   display: block;
