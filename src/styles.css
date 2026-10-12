@@ -1780,10 +1780,11 @@ td small {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 17px;
+  font-weight: 600;
 }
 .store-benefits span {
   color: #4c5d52;
-  font-size: 12px;
+  font-size: 14px;
 }
 .social-proof {
   align-items: center;

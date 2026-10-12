@@ -180,15 +180,15 @@ export default function PublicFunnel() {
                   'A thoughtful choice for your everyday. Make it yours today and pay only when it arrives at your door.'}
               </p>
               <div className='store-benefits'>
-                <span>✓ &nbsp; Pay on delivery</span>
                 <span>✓ &nbsp; Free delivery</span>
+                <span>✓ &nbsp; Pay on delivery</span>
                 <span>
                   ✓ &nbsp; Nationwide Delivery Across Nigeria directly to your
                   doorstep
                 </span>
               </div>
               <div className='social-proof'>
-                <span className='proof-stars'>A GOOD CHOICE</span>
+                <span className='proof-stars'>PREMIUM CHOICE</span>
                 <span>Order today. Pay when it arrives.</span>
               </div>
             </div>
