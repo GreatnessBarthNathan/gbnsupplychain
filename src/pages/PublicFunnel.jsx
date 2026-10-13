@@ -159,6 +159,11 @@ export default function PublicFunnel() {
                 ))}
               </div>
             )}
+            {!success && (
+              <a className='button primary full store-order-cta' href='#order-form'>
+                Place your order <span>→</span>
+              </a>
+            )}
             <div className='store-product-copy'>
               <span className='store-overline'>MADE TO BE YOURS</span>
               <h1>{funnel.productName}</h1>
@@ -241,7 +246,7 @@ export default function PublicFunnel() {
             ) : (
               <>
                 <span className='store-overline'>READY TO MAKE IT YOURS?</span>
-                <h2>Place your order</h2>
+                <h2 id='order-form'>Place your order</h2>
                 <p className='store-form-intro'>
                   Only serious customers should fill this form. Please order
                   only if you’re ready to receive your items and pay on

@@ -1732,6 +1732,10 @@ td small {
   object-fit: contain;
   width: 100%;
 }
+.store-order-cta {
+  margin-top: 16px;
+  text-decoration: none;
+}
 .store-product-copy {
   padding: 25px 6px 0;
 }
@@ -1816,6 +1820,9 @@ td small {
   font: 700 23px var(--display);
   letter-spacing: -0.6px;
   margin: 7px 0 5px;
+}
+.store-order-panel #order-form {
+  scroll-margin-top: 16px;
 }
 .store-form-intro {
   background: #f5f7f2;
