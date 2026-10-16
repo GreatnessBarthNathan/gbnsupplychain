@@ -160,7 +160,10 @@ export default function PublicFunnel() {
               </div>
             )}
             {!success && (
-              <a className='button primary full store-order-cta' href='#order-form'>
+              <a
+                className='button primary full store-order-cta'
+                href='#order-form'
+              >
                 Place your order <span>→</span>
               </a>
             )}
@@ -209,7 +212,7 @@ export default function PublicFunnel() {
                 </details>
                 <details>
                   <summary>Can I pay on delivery?</summary>
-                  <p>Yes, payment on delivery is available.</p>
+                  <p>Yes, delivery is free</p>
                 </details>
                 <details>
                   <summary>How long does delivery take?</summary>
