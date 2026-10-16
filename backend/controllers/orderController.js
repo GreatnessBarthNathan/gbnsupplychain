@@ -288,14 +288,6 @@ async function updateOrderStage(req, res, next) {
       });
       await order.save();
     }
-    const notification = await Notification.create({
-      owner: req.workspaceOwnerId,
-      order: order.id,
-      message: `${order.orderNumber} moved to ${stage.replace('_', ' ')}.`
-    });
-    void sendPushNotification(req.workspaceOwnerId, notification).catch((error) => {
-      console.error('Unable to send order-status push notification:', error.message);
-    });
     res.json(await updatedOrder.populate([
       { path: 'funnel', select: 'productName currency' },
       { path: 'rider', select: 'name phone state' }
@@ -423,13 +415,6 @@ async function confirmRiderStockReceipt(req, res, next, ownerInitiated) {
       );
       throw error;
     }
-    const notification = await Notification.create({
-      owner: transfer.owner,
-      message: `${rider.name} confirmed receipt of ${transfer.quantity} units of stock.`
-    });
-    void sendPushNotification(transfer.owner, notification).catch((error) => {
-      console.error('Unable to send stock-receipt push notification:', error.message);
-    });
     res.json({ message: 'Stock receipt confirmed.', transfer });
   } catch (error) {
     next(error);
@@ -496,14 +481,6 @@ async function assignOrderFromRiderStock(req, res, next) {
     const updatedOrder = await Order.findById(order.id)
       .populate('funnel', 'productName currency')
       .populate('rider', 'name phone state');
-    const notification = await Notification.create({
-      owner: req.workspaceOwnerId,
-      order: order.id,
-      message: `${order.orderNumber} was assigned to ${rider.name} from local stock.`
-    });
-    void sendPushNotification(req.workspaceOwnerId, notification).catch((error) => {
-      console.error('Unable to send local-stock assignment push notification:', error.message);
-    });
     res.json(updatedOrder);
   } catch (error) {
     if (stockReserved) {
@@ -739,21 +716,6 @@ async function updateRiderDelivery(req, res, next) {
       });
       await order.save();
     }
-    const notification = await Notification.create({
-      owner: order.owner,
-      order: order.id,
-      message: `${order.orderNumber}: ${
-        {
-          delivered: 'delivered and paid',
-          failed: `delivery failed; item returned to ${rider.name}’s available stock`,
-          returning: 'return to supplier started',
-          returned: 'supplier confirmed receipt'
-        }[stage]
-      }.`
-    });
-    void sendPushNotification(order.owner, notification).catch((error) => {
-      console.error('Unable to send delivery-status push notification:', error.message);
-    });
     res.json({ message: 'Delivery update saved.' });
   } catch (error) {
     next(error);
@@ -855,14 +817,6 @@ async function redirectFailedOrder(req, res, next) {
       { $push: { stageHistory: { stage: 'failed', note: `Parcel transferred to existing order ${target.orderNumber} for ${target.customerName}.` } } }
     );
 
-    const notification = await Notification.create({
-      owner: source.owner,
-      order: source.id,
-      message: `${source.orderNumber} remains failed. Its parcel is now assigned to existing order ${target.orderNumber} for ${target.customerName}.`
-    });
-    void sendPushNotification(source.owner, notification).catch((error) => {
-      console.error('Unable to send rerouted-delivery push notification:', error.message);
-    });
     res.status(201).json({
       message: `The parcel was assigned to ${target.orderNumber}; the customer's existing order was updated.`,
       orderNumber: target.orderNumber
