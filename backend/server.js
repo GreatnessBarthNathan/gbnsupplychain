@@ -20,7 +20,9 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
       imgSrc: ["'self'", 'data:', 'https:', 'https://www.facebook.com'],
-      connectSrc: ["'self'", 'https://www.facebook.com', 'https://connect.facebook.net']
+      connectSrc: ["'self'", 'https://www.facebook.com', 'https://connect.facebook.net'],
+      frameSrc: ["'self'", 'https://www.facebook.com'],
+      formAction: ["'self'", 'https://www.facebook.com']
     }
   }
 }));
