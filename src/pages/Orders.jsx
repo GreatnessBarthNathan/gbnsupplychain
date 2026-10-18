@@ -47,6 +47,7 @@ export default function Orders({ completed = false }) {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [copiedTrackingLink, setCopiedTrackingLink] = useState('');
+  const [copiedOrderDetails, setCopiedOrderDetails] = useState('');
   const filter = searchParams.get('stage') || 'all';
   const page = Math.max(1, Number(searchParams.get('page')) || 1);
   const search = searchParams.get('q') || '';
@@ -144,6 +145,31 @@ export default function Orders({ completed = false }) {
     }
   }
 
+  async function copyRiderDetails(order) {
+    const trackingLink = new URL(`/track/${encodeURIComponent(order.orderNumber)}`, window.location.origin).href;
+    const location = [order.address, order.city, order.state].filter(Boolean).join(', ');
+    const details = [
+      `Order: ${order.orderNumber}`,
+      `Customer: ${order.customerName}`,
+      `Phone: ${order.phone}`,
+      ...(order.whatsapp ? [`WhatsApp: ${order.whatsapp}`] : []),
+      `Delivery address: ${location}`,
+      `Product: ${order.funnel?.productName || 'Product'}`,
+      `Quantity: ${order.quantity}`,
+      `Collect on delivery: ${money(order.total, order.funnel?.currency)}`,
+      ...(order.note ? [`Delivery note: ${order.note}`] : []),
+      `Track order: ${trackingLink}`
+    ].join('\n');
+
+    setError('');
+    try {
+      await navigator.clipboard.writeText(details);
+      setCopiedOrderDetails(order._id);
+    } catch (err) {
+      setError(`Unable to copy order details: ${err.message}`);
+    }
+  }
+
   async function openReroute(order) {
     setError('');
     setBusy(true);
@@ -210,14 +236,14 @@ export default function Orders({ completed = false }) {
       <div className="filter-tabs">{(completed ? completedFilters : activeFilters).map(([id, label]) =>
         <button key={id} className={filter === id ? 'selected' : ''} onClick={() => updateFilter(id)}>{label}</button>
       )}</div>
-      <div className="table-wrap orders-table-wrap"><table><thead><tr><th>ORDER / DATE</th><th>CUSTOMER</th><th>PRODUCT</th><th>DESTINATION</th><th>QTY</th><th>COD AMOUNT</th><th>STATUS</th><th>CUSTOMER TRACKING</th><th></th></tr></thead>
+      <div className="table-wrap orders-table-wrap"><table><thead><tr><th>ORDER / DATE</th><th>CUSTOMER</th><th>PRODUCT</th><th>DESTINATION</th><th>QTY</th><th>COD AMOUNT</th><th>STATUS</th><th>CUSTOMER TRACKING / SHARE</th><th></th></tr></thead>
         <tbody>{loading ? <tr><td className="table-empty" colSpan="9"><LoadingIndicator message="Loading orders…" /></td></tr> : visible.length ? visible.map((order) => <tr key={order._id}>
           <td><strong className="order-id">{order.orderNumber}</strong><small>{new Date(order.createdAt).toLocaleDateString()}</small></td>
           <td><strong>{order.customerName}</strong><small>{order.phone}</small>{order.whatsapp && <small><a className="whatsapp-link" href={whatsappLink(order.whatsapp)} target="_blank" rel="noreferrer">WhatsApp {order.whatsapp} ↗</a></small>}</td><td>{order.funnel?.productName || 'Product'}</td>
           <td className="order-destination"><strong>{order.address}</strong><small>{[order.city, order.state].filter(Boolean).join(', ')}</small></td>
           <td>{order.quantity}</td><td>{money(order.total, order.funnel?.currency)}{order.stage === 'transferred' && <small>Rider charge: {money(order.remittanceServiceCharge, order.funnel?.currency)}<br />Transferred: {money(order.remittedAmount, order.funnel?.currency)}<br />Recorded: {new Date(order.remittedAt).toLocaleDateString()}</small>}</td>
           <td><StatusBadge stage={order.stage} />{order.rider && <small className="rider-subline">{order.rider.name} · {[order.rider.city, order.rider.state].filter(Boolean).join(', ')}</small>}{order.stockRestocked && <small>Product returned to rider stock</small>}{order.redirectedTo && <small>Parcel transferred to {order.redirectedTo.orderNumber}</small>}{order.redirectedFrom && <small>Parcel rerouted from {order.redirectedFrom.orderNumber}</small>}</td>
-          <td className="tracking-link-cell"><a href={`/track/${encodeURIComponent(order.orderNumber)}`} target="_blank" rel="noreferrer">Track order ↗</a><button type="button" onClick={() => copyTrackingLink(order.orderNumber)}>{copiedTrackingLink === order.orderNumber ? 'Copied!' : 'Copy link'}</button></td>
+          <td className="tracking-link-cell"><a href={`/track/${encodeURIComponent(order.orderNumber)}`} target="_blank" rel="noreferrer">Track order ↗</a><button type="button" onClick={() => copyTrackingLink(order.orderNumber)}>{copiedTrackingLink === order.orderNumber ? 'Copied!' : 'Copy link'}</button><button type="button" onClick={() => copyRiderDetails(order)}>{copiedOrderDetails === order._id ? 'Details copied!' : 'Copy rider details'}</button></td>
           <td>{order.redirectedTo ? <small className="transferred-order-note">Parcel transferred · no further action</small> : <>{order.stage === 'activated' && <button className="row-action" onClick={() => setStockAssignment({ order, riderId: '' })}>Assign from rider stock →</button>}{order.stage === 'failed' && order.rider && !order.stockRestocked && <button className="row-action" disabled={busy} onClick={() => openReroute(order)}>Transfer parcel →</button>}{order.stockRestocked && <><small className="transferred-order-note">Product returned to rider stock.</small><button className="row-action" onClick={() => setEditing({ id: order._id, stage: 'returning', riderId: '', note: '', serviceCharge: '' })}>Return stock to supplier →</button></>}{nextByStage[order.stage]?.length > 0 && !(order.stage === 'failed' && order.stockRestocked) && (order.stage !== 'delivered' || isAdmin) && <button className="row-action" onClick={() => setEditing({ id: order._id, stage: nextByStage[order.stage][0], riderId: '', note: '', serviceCharge: '' })}>{order.stage === 'delivered' ? 'Record transfer' : 'Move order'} <span>→</span></button>}</>}</td>
         </tr>) : <tr><td className="table-empty" colSpan="9">{search ? 'No orders match your search.' : completed ? 'No completed orders in this stage yet.' : 'No active orders in this stage yet.'}</td></tr>}</tbody>
       </table></div>
