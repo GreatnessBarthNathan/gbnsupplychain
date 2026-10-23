@@ -144,7 +144,17 @@ export default function Riders() {
         <form className="form-stack" onSubmit={saveRider}>
           <label>Rider name<input required maxLength="100" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Full name" /></label>
           <label>Phone number<input required type="tel" maxLength="24" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+234 800 000 0000" /></label>
-          <label>Primary state<select required value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })}><option value="">Select state</option>{nigerianStates.map((state) => <option key={state} value={state}>{state === 'FCT' ? 'Federal Capital Territory (FCT)' : state}</option>)}</select></label>
+          <label>
+            Primary state
+            <select required value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })}>
+              <option value="">Select state</option>
+              {nigerianStates.map((state) => (
+                <option key={state} value={state}>
+                  {state === 'FCT' ? 'Abuja' : state}
+                </option>
+              ))}
+            </select>
+          </label>
           <label>Primary city / town<input required maxLength="100" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Enter primary city or town" /></label>
           {editingId && <label>Rider status<select value={form.active ? 'active' : 'inactive'} onChange={(e) => setForm({ ...form, active: e.target.value === 'active' })}><option value="active">Active</option><option value="inactive">Inactive</option></select></label>}
           {error && <div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="button secondary" onClick={() => setShowForm(false)}>Cancel</button><button className="button primary" disabled={busy}>{busy ? (editingId ? 'Saving…' : 'Adding…') : editingId ? 'Save changes' : 'Add rider'} <span>→</span></button></div>

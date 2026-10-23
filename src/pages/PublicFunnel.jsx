@@ -325,9 +325,7 @@ export default function PublicFunnel() {
                         <option value=''>Select state</option>
                         {nigerianStates.map((state) => (
                           <option key={state} value={state}>
-                            {state === 'FCT'
-                              ? 'Federal Capital Territory (FCT)'
-                              : state}
+                            {state === 'FCT' ? 'Abuja' : state}
                           </option>
                         ))}
                       </select>
