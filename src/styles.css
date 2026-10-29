@@ -1637,7 +1637,7 @@ td small {
 }
 .store-trust {
   color: #53635a;
-  font-size: 12px;
+  font-size: 14px;
 }
 .store-layout {
   display: grid;
@@ -1705,7 +1705,7 @@ td small {
 }
 .store-image-description {
   color: #4f5d54;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.6;
   margin: 8px 2px 0;
 }
@@ -1736,16 +1736,20 @@ td small {
   margin-top: 16px;
   text-decoration: none;
 }
+.storefront .button {
+  font-size: 15px;
+  min-height: 48px;
+}
 .store-product-copy {
   padding: 25px 6px 0;
 }
 .storefront .store-overline {
   color: #566b5c;
-  font-size: 11px;
+  font-size: 12px;
 }
 .store-product-copy h1 {
   color: #2b4035;
-  font: 700 32px var(--display);
+  font: 700 36px var(--display);
   letter-spacing: -1.1px;
   margin: 8px 0 5px;
 }
@@ -1755,7 +1759,7 @@ td small {
 .store-price-label {
   color: #536057;
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 2px;
 }
@@ -1767,15 +1771,15 @@ td small {
 }
 .store-regular-price {
   color: #7a847d;
-  font-size: 15px;
+  font-size: 17px;
 }
 .store-price {
   color: #356044;
-  font: 700 21px var(--display);
+  font: 700 24px var(--display);
 }
 .store-product-copy > p {
   color: #536057;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.7;
   margin: 13px 0;
   max-width: 470px;
@@ -1788,7 +1792,7 @@ td small {
 }
 .store-benefits span {
   color: #4c5d52;
-  font-size: 14px;
+  font-size: 16px;
 }
 .social-proof {
   align-items: center;
@@ -1800,12 +1804,12 @@ td small {
 }
 .proof-stars {
   color: #8a642c;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 1.5px;
 }
 .social-proof > span:last-child {
   color: #536057;
-  font-size: 12px;
+  font-size: 14px;
 }
 .store-order-panel {
   align-self: start;
@@ -1817,7 +1821,7 @@ td small {
 }
 .store-order-panel h2 {
   color: #2e4037;
-  font: 700 23px var(--display);
+  font: 700 26px var(--display);
   letter-spacing: -0.6px;
   margin: 7px 0 5px;
 }
@@ -1829,7 +1833,7 @@ td small {
   border-left: 3px solid #c7875c;
   border-radius: 4px;
   color: #4e5c52;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
   margin: 0 0 18px;
   padding: 10px 12px;
@@ -1840,7 +1844,7 @@ td small {
 }
 .store-form label {
   color: #3f5046;
-  font-size: 12px;
+  font-size: 14px;
   gap: 6px;
 }
 .store-form input,
@@ -1848,8 +1852,8 @@ td small {
 .store-form select {
   background: #fbfcfa;
   color: #293a30;
-  font-size: 13px;
-  padding: 11px 12px;
+  font-size: 16px;
+  padding: 12px;
 }
 .store-form input::placeholder,
 .store-form textarea::placeholder {
@@ -1869,18 +1873,28 @@ td small {
 }
 .order-total span {
   color: #536057;
-  font-size: 12px;
+  font-size: 14px;
 }
 .order-total strong {
   color: #2f4937;
-  font: 700 17px var(--display);
+  font: 700 20px var(--display);
+}
+.order-total small {
+  font-size: 12px;
+}
+.storefront .intent-check {
+  font-size: 12px !important;
+  padding: 12px;
+}
+.storefront .form-error {
+  font-size: 12px;
 }
 .order-submit {
   min-height: 44px;
 }
 .secure-note {
   color: #5b685f;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.6;
   margin: -2px 3px 0;
   text-align: center;
@@ -1890,7 +1904,7 @@ td small {
   border-top: 1px solid #e9ede7;
   color: #59675e;
   display: flex;
-  font-size: 10px;
+  font-size: 12px;
   justify-content: space-between;
   margin: 0 auto;
   max-width: 1120px;
@@ -1908,7 +1922,7 @@ td small {
 }
 .store-footer-disclaimer {
   color: #59675e;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.6;
   margin: 0;
   max-width: 760px;
@@ -1928,12 +1942,12 @@ td small {
 }
 .store-faq h2 {
   color: #2e4037;
-  font: 700 22px var(--display);
+  font: 700 24px var(--display);
   letter-spacing: -0.5px;
   margin: 7px 0 16px;
 }
 .store-order-panel .store-faq h2 {
-  font-size: 19px;
+  font-size: 21px;
   margin-bottom: 10px;
 }
 .store-faq-list {
@@ -1946,7 +1960,7 @@ td small {
 .store-faq-list summary {
   color: #30443a;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   list-style: none;
   padding: 15px 24px 15px 0;
@@ -1969,13 +1983,14 @@ td small {
 }
 .store-faq-list details p {
   color: #536057;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   margin: -3px 24px 15px 0;
   overflow-wrap: anywhere;
 }
 .store-load-error {
   color: #a95543;
+  font-size: 15px;
   margin: 60px auto;
   max-width: 550px;
   text-align: center;
@@ -1997,12 +2012,12 @@ td small {
   width: 53px;
 }
 .order-success h2 {
-  font-size: 23px;
+  font-size: 26px;
   margin: 8px 0;
 }
 .order-success > p {
   color: #818c85;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   margin: 0 auto 19px;
   max-width: 320px;
@@ -2017,12 +2032,12 @@ td small {
 }
 .confirmation-number small {
   color: #89958d;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 1px;
 }
 .confirmation-number strong {
   color: #367057;
-  font: 700 14px var(--display);
+  font: 700 16px var(--display);
 }
 .tracking-page {
   display: flex;
@@ -2732,7 +2747,7 @@ td small {
   }
   .store-header .brand {
     flex: 0 1 auto;
-    font-size: 12px;
+    font-size: 14px;
     gap: 7px;
     min-width: 0;
   }
@@ -2744,7 +2759,7 @@ td small {
   }
   .store-trust {
     flex: 0 1 45%;
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.4;
     min-width: 0;
     text-align: right;
@@ -2781,7 +2796,7 @@ td small {
     padding: 18px 2px 0;
   }
   .store-product-copy h1 {
-    font-size: 26px;
+    font-size: 30px;
     overflow-wrap: anywhere;
   }
   .store-order-panel {
@@ -2797,7 +2812,7 @@ td small {
     flex-wrap: wrap;
   }
   .store-footer {
-    font-size: 9px;
+    font-size: 11px;
     gap: 12px;
     min-width: 0;
   }
@@ -2817,13 +2832,13 @@ td small {
     margin-bottom: 20px;
   }
   .store-faq h2 {
-    font-size: 19px;
+    font-size: 21px;
   }
   .store-faq-list summary {
-    font-size: 12px;
+    font-size: 14px;
   }
   .store-faq-list details p {
-    font-size: 11px;
+    font-size: 13px;
   }
   .tracking-card {
     margin: 34px auto;
@@ -2886,11 +2901,11 @@ td small {
     gap: 8px;
   }
   .store-header .brand {
-    font-size: 11px;
+    font-size: 12px;
   }
   .store-trust {
     flex-basis: 42%;
-    font-size: 9px;
+    font-size: 10px;
   }
   .store-order-panel {
     padding: 16px;
