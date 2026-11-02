@@ -162,17 +162,28 @@ export default function PublicFunnel() {
                 </p>
               )}
             {mediaItems.length > 1 && (
-              <div className='store-gallery' aria-label='Product photos and video'>
+              <div
+                className='store-gallery'
+                aria-label='Product photos and video'
+              >
                 {mediaItems.map((media, index) => (
                   <button
                     className={`store-thumbnail${media.type === 'video' ? ' store-video-thumbnail' : ''}${selectedMediaIndex === index ? ' selected' : ''}`}
                     key={`${media.url}-${index}`}
                     type='button'
                     onClick={() => setSelectedMediaIndex(index)}
-                    aria-label={media.type === 'video' ? 'Play product video' : `View product photo ${index - (hasVideo ? 1 : 0) + 1}${funnel.imageDescriptions?.[index - (hasVideo ? 1 : 0)] ? `: ${funnel.imageDescriptions[index - (hasVideo ? 1 : 0)]}` : ''}`}
+                    aria-label={
+                      media.type === 'video'
+                        ? 'Play product video'
+                        : `View product photo ${index - (hasVideo ? 1 : 0) + 1}${funnel.imageDescriptions?.[index - (hasVideo ? 1 : 0)] ? `: ${funnel.imageDescriptions[index - (hasVideo ? 1 : 0)]}` : ''}`
+                    }
                     aria-pressed={selectedMediaIndex === index}
                   >
-                    {media.type === 'video' ? <span aria-hidden='true'>▶</span> : <img src={media.url} alt='' />}
+                    {media.type === 'video' ? (
+                      <span aria-hidden='true'>▶</span>
+                    ) : (
+                      <img src={media.url} alt='' />
+                    )}
                   </button>
                 ))}
               </div>
@@ -239,8 +250,10 @@ export default function PublicFunnel() {
                 <details>
                   <summary>Is this product Original?</summary>
                   <p>
-                    Yes, we only sell carefully selected perfumes trusted by our
-                    customers. Direct importation, you can be rest assured.
+                    Yes, Every perfume we sell is 100% authentic, imported
+                    directly from trusted suppliers and carefully selected for
+                    quality. These are fragrances our customers already love and
+                    keep coming back for, so you can shop with confidence.
                   </p>
                 </details>
               </div>
