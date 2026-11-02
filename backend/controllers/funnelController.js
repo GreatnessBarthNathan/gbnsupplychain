@@ -15,6 +15,14 @@ function isHttpUrl(value) {
   }
 }
 
+function isHttpsUrl(value) {
+  try {
+    return new URL(value).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function validateFunnelInput(body) {
   const { name, productName, description, price, regularPrice, currency, pixelId } = body;
   if (!name?.trim() || !productName?.trim() || !Number.isFinite(Number(price))) {
@@ -33,8 +41,8 @@ function validateFunnelInput(body) {
     return { error: 'Product video URL must be text.' };
   }
   const videoUrl = requestedVideoUrl.trim();
-  if (videoUrl && (!isHttpUrl(videoUrl) || videoUrl.length > 2048)) {
-    return { error: 'Add a valid HTTP or HTTPS product video URL no longer than 2048 characters.' };
+  if (videoUrl && (!isHttpsUrl(videoUrl) || videoUrl.length > 2048)) {
+    return { error: 'Add a valid HTTPS product video URL no longer than 2048 characters.' };
   }
   const requestedImages = body.images ?? [];
   if (!Array.isArray(requestedImages)) {
