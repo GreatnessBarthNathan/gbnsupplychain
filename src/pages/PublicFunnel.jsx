@@ -36,12 +36,12 @@ export default function PublicFunnel() {
   const [success, setSuccess] = useState('')
   const [busy, setBusy] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0)
 
   useEffect(() => {
     setLoading(true)
     setFunnel(null)
-    setSelectedImageIndex(0)
+    setSelectedMediaIndex(0)
     setError('')
     api(`/public/funnels/${slug}`)
       .then(setFunnel)
@@ -102,6 +102,15 @@ export default function PublicFunnel() {
   const quantity = Number(form.quantity) || 1
   const discountPercent = Math.round(getDiscountRateForQuantity(quantity) * 100)
   const orderTotal = getDiscountedTotal(funnel?.price || 0, quantity)
+  const hasVideo = Boolean(funnel?.videoUrl)
+  const mediaItems = funnel
+    ? [
+        ...(hasVideo ? [{ type: 'video', url: funnel.videoUrl }] : []),
+        ...(funnel.images || []).map((url) => ({ type: 'image', url })),
+      ]
+    : []
+  const selectedMedia = mediaItems[selectedMediaIndex]
+  const selectedImageIndex = selectedMediaIndex - (hasVideo ? 1 : 0)
 
   return (
     <main className='storefront'>
@@ -122,12 +131,21 @@ export default function PublicFunnel() {
         <div className='store-layout'>
           <section className='store-product'>
             <div
-              className={`store-image${funnel.images?.length ? ' has-photo' : ''}`}
+              className={`store-image${mediaItems.length ? ' has-photo' : ''}`}
             >
-              {funnel.images?.length ? (
+              {selectedMedia?.type === 'video' ? (
+                <video
+                  className='store-product-photo'
+                  src={selectedMedia.url}
+                  autoPlay
+                  muted
+                  playsInline
+                  controls
+                />
+              ) : selectedMedia ? (
                 <img
                   className='store-product-photo'
-                  src={funnel.images[selectedImageIndex] || funnel.images[0]}
+                  src={selectedMedia.url}
                   alt={funnel.productName}
                 />
               ) : (
@@ -137,24 +155,24 @@ export default function PublicFunnel() {
                 </>
               )}
             </div>
-            {funnel.images?.length > 0 &&
+            {selectedMedia?.type === 'image' &&
               funnel.imageDescriptions?.[selectedImageIndex] && (
                 <p className='store-image-description'>
                   {funnel.imageDescriptions[selectedImageIndex]}
                 </p>
               )}
-            {funnel.images?.length > 1 && (
-              <div className='store-gallery' aria-label='Product photos'>
-                {funnel.images.map((image, index) => (
+            {mediaItems.length > 1 && (
+              <div className='store-gallery' aria-label='Product photos and video'>
+                {mediaItems.map((media, index) => (
                   <button
-                    className={`store-thumbnail${selectedImageIndex === index ? ' selected' : ''}`}
-                    key={`${image}-${index}`}
+                    className={`store-thumbnail${media.type === 'video' ? ' store-video-thumbnail' : ''}${selectedMediaIndex === index ? ' selected' : ''}`}
+                    key={`${media.url}-${index}`}
                     type='button'
-                    onClick={() => setSelectedImageIndex(index)}
-                    aria-label={`View product photo ${index + 1}${funnel.imageDescriptions?.[index] ? `: ${funnel.imageDescriptions[index]}` : ''}`}
-                    aria-pressed={selectedImageIndex === index}
+                    onClick={() => setSelectedMediaIndex(index)}
+                    aria-label={media.type === 'video' ? 'Play product video' : `View product photo ${index - (hasVideo ? 1 : 0) + 1}${funnel.imageDescriptions?.[index - (hasVideo ? 1 : 0)] ? `: ${funnel.imageDescriptions[index - (hasVideo ? 1 : 0)]}` : ''}`}
+                    aria-pressed={selectedMediaIndex === index}
                   >
-                    <img src={image} alt='' />
+                    {media.type === 'video' ? <span aria-hidden='true'>▶</span> : <img src={media.url} alt='' />}
                   </button>
                 ))}
               </div>

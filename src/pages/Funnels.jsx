@@ -4,7 +4,7 @@ import { api, money } from '../api';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useAuth } from '../context/AuthContext';
 
-const blank = { name: '', productName: '', description: '', images: [], price: '', regularPrice: '', currency: 'NGN', pixelId: '' };
+const blank = { name: '', productName: '', description: '', videoUrl: '', images: [], price: '', regularPrice: '', currency: 'NGN', pixelId: '' };
 
 export default function Funnels() {
   const { user } = useAuth();
@@ -41,6 +41,7 @@ export default function Funnels() {
       name: funnel.name,
       productName: funnel.productName,
       description: funnel.description || '',
+      videoUrl: funnel.videoUrl || '',
       images: (funnel.images || []).map((url, index) => ({
         url,
         description: funnel.imageDescriptions?.[index] || ''
@@ -85,6 +86,7 @@ export default function Funnels() {
     try {
       const payload = {
         ...form,
+        videoUrl: form.videoUrl.trim(),
         images: form.images.filter((image) => image.url.trim()).map((image) => image.url.trim()),
         imageDescriptions: form.images
           .filter((image) => image.url.trim())
@@ -126,7 +128,7 @@ export default function Funnels() {
       <div className="funnel-callout"><span className="callout-icon">✳</span><div><strong>Made for the scroll-stopping moment.</strong><p>Share your funnel link in a Facebook ad. Meta Pixel events are sent when a customer views the page and places an order.</p></div></div>
       <div className="funnel-grid">{loading ? <LoadingIndicator message="Loading funnels…" /> : funnels.map((funnel, index) => (
         <article className="funnel-card" key={funnel._id}>
-          <div className={`product-art art-${index % 4}`}>{funnel.images?.[0] ? <img src={funnel.images[0]} alt={funnel.productName} /> : <span className="product-shape">◈</span>}<span className="product-art-label">GBN / PRODUCT {String(index + 1).padStart(2, '0')}</span></div>
+          <div className={`product-art art-${index % 4}`}>{funnel.images?.[0] ? <img src={funnel.images[0]} alt={funnel.productName} /> : funnel.videoUrl ? <span className="product-shape">▶</span> : <span className="product-shape">◈</span>}<span className="product-art-label">GBN / PRODUCT {String(index + 1).padStart(2, '0')}</span></div>
           <div className="funnel-card-body"><div className="funnel-card-top"><span className="active-mark"><i /> Live funnel</span><div className="funnel-card-actions">{isAdmin && <><button className="icon-button small-button" title="Edit funnel" aria-label={`Edit ${funnel.productName}`} onClick={() => openEditForm(funnel)}>✎</button><button className="icon-button small-button delete-button" title="Delete funnel" aria-label={`Delete ${funnel.productName}`} disabled={deletingId === funnel._id} onClick={() => deleteFunnel(funnel)}>{deletingId === funnel._id ? '…' : '×'}</button></>}<button className="icon-button small-button" title="Open funnel" aria-label={`Preview ${funnel.productName}`} onClick={() => window.open(`/f/${funnel.slug}`, '_blank', 'noopener,noreferrer')}>↗</button></div></div>
             <h3>{funnel.productName}</h3><p className="funnel-name">{funnel.name}</p><div className="funnel-card-footer"><strong>{money(funnel.price, funnel.currency)}</strong><Link to={`/f/${funnel.slug}`} target="_blank">Preview page <span>→</span></Link></div>
             <div className="funnel-url"><span>gbn.store/f/{funnel.slug}</span><button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/f/${funnel.slug}`)}>Copy link</button></div>
@@ -141,6 +143,7 @@ export default function Funnels() {
           <label>Funnel name<input required maxLength="100" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Summer launch" /></label>
           <label>Product name<input required maxLength="120" value={form.productName} onChange={(e) => setForm({ ...form, productName: e.target.value })} placeholder="What are you selling?" /></label>
           <label>Product description<textarea maxLength="1200" rows="3" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="What makes this product worth having?" /></label>
+          <label>Product video URL <span className="optional">OPTIONAL · DISPLAYED FIRST</span><input type="url" maxLength="2048" value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="https://example.com/product-video.mp4" /><small>Use a direct link to an MP4 or WebM video. It will autoplay muted on the product page.</small></label>
           <div className="funnel-image-fields">
             <div className="funnel-image-heading"><span>Product images <span className="optional">UP TO 6</span></span>{form.images.length < 6 && <button className="row-action" type="button" onClick={addImage}>Add image +</button>}</div>
             {form.images.map((image, index) => <div className="funnel-image-field" key={index}>

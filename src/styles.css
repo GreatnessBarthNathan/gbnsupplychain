@@ -1732,6 +1732,13 @@ td small {
   object-fit: contain;
   width: 100%;
 }
+.store-video-thumbnail {
+  align-items: center;
+  color: #397259;
+  display: flex;
+  font-size: 20px;
+  justify-content: center;
+}
 .store-order-cta {
   margin-top: 16px;
   text-decoration: none;

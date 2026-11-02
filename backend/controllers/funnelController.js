@@ -28,6 +28,14 @@ function validateFunnelInput(body) {
     && (!Number.isFinite(numericRegularPrice) || numericRegularPrice <= numericPrice)) {
     return { error: 'Regular price must be higher than today’s price.' };
   }
+  const requestedVideoUrl = body.videoUrl ?? '';
+  if (typeof requestedVideoUrl !== 'string') {
+    return { error: 'Product video URL must be text.' };
+  }
+  const videoUrl = requestedVideoUrl.trim();
+  if (videoUrl && (!isHttpUrl(videoUrl) || videoUrl.length > 2048)) {
+    return { error: 'Add a valid HTTP or HTTPS product video URL no longer than 2048 characters.' };
+  }
   const requestedImages = body.images ?? [];
   if (!Array.isArray(requestedImages)) {
     return { error: 'Product images must be provided as a list of image URLs.' };
@@ -47,6 +55,7 @@ function validateFunnelInput(body) {
       name,
       productName,
       description,
+      videoUrl,
       images,
       imageDescriptions,
       price: numericPrice,
@@ -117,7 +126,7 @@ async function deleteFunnel(req, res, next) {
 async function getPublicFunnel(req, res, next) {
   try {
     const funnel = await Funnel.findOne({ slug: req.params.slug, active: true, archived: { $ne: true } })
-      .select('name productName description images imageDescriptions price regularPrice currency pixelId slug');
+      .select('name productName description videoUrl images imageDescriptions price regularPrice currency pixelId slug');
     if (!funnel) return res.status(404).json({ message: 'This product page is no longer available.' });
     res.json(funnel);
   } catch (error) {

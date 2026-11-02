@@ -6,6 +6,7 @@ const funnelSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, maxlength: 100 },
     productName: { type: String, required: true, trim: true, maxlength: 120 },
     description: { type: String, trim: true, maxlength: 1200, default: '' },
+    videoUrl: { type: String, trim: true, default: '', maxlength: 2048 },
     images: { type: [String], default: [] },
     imageDescriptions: { type: [String], default: [] },
     price: { type: Number, required: true, min: 0 },
