@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api, money } from '../api'
 import LoadingIndicator from '../components/LoadingIndicator'
+import ProductCarousel from '../components/ProductCarousel'
 import nigerianStates from '../../shared/nigerianStates.json'
 
 const blank = {
@@ -276,6 +277,10 @@ export default function PublicFunnel() {
                 <a href={`/track/${success}`} className='button primary full'>
                   Track your order <span>→</span>
                 </a>
+                <ProductCarousel
+                  products={funnel.relatedFunnels}
+                  caption='products you may also like'
+                />
               </div>
             ) : (
               <>
@@ -425,6 +430,12 @@ export default function PublicFunnel() {
             )}
           </section>
         </div>
+      )}
+      {funnel && (
+        <ProductCarousel
+          products={funnel.relatedFunnels}
+          caption='check out our other products'
+        />
       )}
       <footer className='store-footer public-funnel-footer'>
         <div className='store-footer-row'>

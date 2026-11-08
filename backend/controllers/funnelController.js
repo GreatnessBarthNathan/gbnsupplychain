@@ -134,9 +134,18 @@ async function deleteFunnel(req, res, next) {
 async function getPublicFunnel(req, res, next) {
   try {
     const funnel = await Funnel.findOne({ slug: req.params.slug, active: true, archived: { $ne: true } })
-      .select('name productName description videoUrl images imageDescriptions price regularPrice currency pixelId slug');
+      .select('owner name productName description videoUrl images imageDescriptions price regularPrice currency pixelId slug');
     if (!funnel) return res.status(404).json({ message: 'This product page is no longer available.' });
-    res.json(funnel);
+    const relatedFunnels = await Funnel.find({
+      owner: funnel.owner,
+      _id: { $ne: funnel._id },
+      active: true,
+      archived: { $ne: true }
+    })
+      .select('productName images slug')
+      .sort({ createdAt: -1 });
+    const { owner, ...publicFunnel } = funnel.toObject();
+    res.json({ ...publicFunnel, relatedFunnels });
   } catch (error) {
     next(error);
   }
