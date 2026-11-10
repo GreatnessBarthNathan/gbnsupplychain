@@ -4,6 +4,7 @@ import AppShell from './components/AppShell';
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import Funnels from './pages/Funnels';
+import FunnelAnalytics from './pages/FunnelAnalytics';
 import Orders from './pages/Orders';
 import Riders from './pages/Riders';
 import PublicFunnel from './pages/PublicFunnel';
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/" element={<Protected><AppShell /></Protected>}>
         <Route index element={<Dashboard />} />
         <Route path="funnels" element={<Funnels />} />
+        <Route path="analytics" element={<FunnelAnalytics />} />
         <Route path="orders" element={<Orders />} />
         <Route path="completed-orders" element={<Orders completed />} />
         <Route path="riders" element={<Riders />} />

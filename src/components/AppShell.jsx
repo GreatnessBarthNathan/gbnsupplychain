@@ -7,6 +7,7 @@ import { disablePushNotifications, enablePushNotifications } from '../pushNotifi
 const navItems = [
   { to: '/', label: 'Overview', icon: '◫', end: true },
   { to: '/funnels', label: 'Sales funnels', icon: '⌁' },
+  { to: '/analytics', label: 'Funnel visits', icon: '▥' },
   { to: '/orders', label: 'Orders', icon: '▤' },
   { to: '/completed-orders', label: 'Completed orders', icon: '✓' },
   { to: '/riders', label: 'Dispatch riders', icon: '⌖' }
@@ -15,6 +16,7 @@ const navItems = [
 const titles = {
   '/': ['Good business starts here', 'Your business at a glance'],
   '/funnels': ['Sales funnels', 'Turn your ads into paid deliveries'],
+  '/analytics': ['Funnel visits', 'See how often each product page is visited'],
   '/orders': ['Orders', 'Every order, moving forward'],
   '/completed-orders': ['Completed orders', 'Transferred and failed orders'],
   '/riders': ['Dispatch riders', 'Keep your last-mile team in sync']

@@ -7,6 +7,7 @@ const orderController = require('../controllers/orderController');
 const pushController = require('../controllers/pushController');
 const dashboardController = require('../controllers/dashboardController');
 const trackingController = require('../controllers/trackingController');
+const analyticsController = require('../controllers/analyticsController');
 
 const router = express.Router();
 
@@ -15,12 +16,14 @@ router.post('/auth/login', authController.login);
 router.get('/auth/me', auth, (req, res) => res.json({ user: { id: req.user.id, name: req.user.name, email: req.user.email, role: req.user.role } }));
 router.post('/auth/invite', auth, requireRole('admin'), authController.createInvite);
 router.get('/public/funnels/:slug', funnelController.getPublicFunnel);
+router.post('/public/funnels/:slug/visits', auth.optional, analyticsController.recordFunnelVisit);
 router.post('/public/funnels/:slug/orders', orderController.createPublicOrder);
 router.get('/public/track/:orderNumber', trackingController.getTracking);
 router.get('/public/riders/:accessToken', orderController.getRiderPortal);
 router.patch('/public/riders/:accessToken/orders/:orderId', orderController.updateRiderDelivery);
 router.patch('/public/riders/:accessToken/stock-transfers/:transferId/receive', orderController.receiveRiderStock);
 router.get('/funnels', auth, funnelController.listFunnels);
+router.get('/analytics/funnels', auth, analyticsController.getFunnelAnalytics);
 router.post('/funnels', auth, requireRole('admin'), funnelController.createFunnel);
 router.patch('/funnels/:id', auth, requireRole('admin'), funnelController.updateFunnel);
 router.delete('/funnels/:id', auth, requireRole('admin'), funnelController.deleteFunnel);

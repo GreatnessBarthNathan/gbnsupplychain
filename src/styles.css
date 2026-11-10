@@ -436,6 +436,119 @@ a {
   margin: 0 auto;
   max-width: 1240px;
 }
+.analytics-toolbar {
+  align-items: center;
+  margin-bottom: 4px;
+}
+.analytics-toolbar .subtle-copy {
+  margin: 0;
+}
+.analytics-period-note {
+  color: #87938d;
+  font-size: 10px;
+}
+.analytics-error {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.analytics-error .button {
+  flex: 0 0 auto;
+  margin-left: 12px;
+}
+.analytics-summary {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 10px 0 35px;
+}
+.analytics-stat {
+  background: #fff;
+  border: 1px solid #eaede8;
+  border-radius: 12px;
+  display: grid;
+  min-height: 126px;
+  padding: 18px 20px;
+}
+.analytics-stat > span {
+  color: #7f8c85;
+  font-size: 11px;
+  font-weight: 600;
+}
+.analytics-stat strong {
+  color: #244337;
+  font: 700 27px var(--display);
+  letter-spacing: -0.8px;
+  margin-top: 12px;
+}
+.analytics-stat small {
+  color: #98a19c;
+  font-size: 10px;
+  margin-top: 2px;
+}
+.analytics-stat-0 {
+  background: #edf4ef;
+  border-color: #e3ede5;
+}
+.analytics-table-section {
+  margin-top: 8px;
+}
+.analytics-table-section .section-heading {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.analytics-table-section .section-heading h2 {
+  color: #263a34;
+  font: 700 17px var(--display);
+  margin: 0;
+}
+.analytics-table-section .section-heading > span {
+  color: #87938d;
+  font-size: 10px;
+}
+.analytics-table {
+  min-width: 650px;
+}
+.analytics-table th:not(:first-child),
+.analytics-table td:not(:first-child) {
+  text-align: right;
+}
+.analytics-table td {
+  font-size: 12px;
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+.analytics-table td strong {
+  font-size: 12px;
+}
+.analytics-empty {
+  margin: 0;
+}
+@media (max-width: 760px) {
+  .analytics-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 28px;
+  }
+  .analytics-toolbar {
+    align-items: flex-start;
+  }
+}
+@media (max-width: 430px) {
+  .analytics-stat {
+    min-height: 112px;
+    padding: 14px;
+  }
+  .analytics-stat strong {
+    font-size: 24px;
+  }
+  .analytics-period-note {
+    line-height: 1.5;
+    max-width: 125px;
+    text-align: right;
+  }
+}
 .welcome-banner {
   background: #e8efe7;
   border-radius: 15px;

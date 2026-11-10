@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api, money } from '../api'
 import LoadingIndicator from '../components/LoadingIndicator'
@@ -38,6 +38,7 @@ export default function PublicFunnel() {
   const [busy, setBusy] = useState(false)
   const [loading, setLoading] = useState(true)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0)
+  const trackedSlug = useRef('')
 
   useEffect(() => {
     setLoading(true)
@@ -45,7 +46,14 @@ export default function PublicFunnel() {
     setSelectedMediaIndex(0)
     setError('')
     api(`/public/funnels/${slug}`)
-      .then(setFunnel)
+      .then((result) => {
+        setFunnel(result)
+        if (trackedSlug.current !== slug) {
+          trackedSlug.current = slug
+          api(`/public/funnels/${slug}/visits`, { method: 'POST' })
+            .catch((err) => console.error('Unable to record funnel visit:', err))
+        }
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [slug])
